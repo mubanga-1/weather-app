@@ -12,4 +12,11 @@ function createElement(elementObject) {
   return newElement;
 }
 
-export { createElement };
+
+function appendChildren(parent, children) {
+  children.forEach(child => {
+    parent.appendChild(child);
+  });
+}
+
+export { createElement, appendChildren };
