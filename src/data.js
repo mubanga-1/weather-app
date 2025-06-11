@@ -1,32 +1,41 @@
-// Import helpful functions from date-fns
-import { addDays, format } from "date-fns";
-
-// Create start day for the current day and format it accordingly
-const startDate = new Date();
-const startDateFormated = format(startDate, "yyyy-MM-dd");
-
-// Use addDays function to get the date of the day that comes after 7 days and format it
-const endDate = addDays(startDate, 7);
-const endDateFormated = format(endDate, "yyyy-MM-dd"); 
-
-
 // Asynchronously get weather data of any specified location on startDateFormated date (at timeString time) to endDateFormated date
-async function getData(location) {
+async function getWeatherData(location, startDate, endDate) {
     
   try {
-      const request = await fetch(
-      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/${startDateFormated}/${endDateFormated}?unitGroup=metric&key=JTVVBMHKSH6MFJEKCRRK3RPCY`,
+    // Make api call for weather data 
+    const request = await fetch(
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/${startDate}/${endDate}?unitGroup=metric&key=JTVVBMHKSH6MFJEKCRRK3RPCY`,
       { mode: "cors" },
     );
 
-    // Store response in once retrieved from the api
+    // Store response in once retrieved from the api as json
     const response = await request.json();
 
     return response;
 
   } catch(err) {
+    // If an error was caught display it to user via an alert box
     window.alert(err); 
   }
 }
 
-export { getData };
+async function getLocalTime(location) {
+  try {
+    // Make call to api for local time information
+    const request = await fetch(
+      `https://timezone.abstractapi.com/v1/current_time/?api_key=9d63a093bc89406db3e3f9280040a8f8&location=${location}`, 
+      { mode: "cors" }
+    );
+
+    // Store and retrieve request response as json 
+    const response = await request.json();
+
+    return response;
+
+  } catch(err) {
+    // If an error was caught display it to user via an alert box
+    window.alert(err);
+  }
+}
+
+export { getWeatherData, getLocalTime };
