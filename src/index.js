@@ -31,7 +31,7 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
 
           // Get weather conditions depending on weather or not we have access to the current conditions
           if (Object.keys(weatherData).includes("currentConditions")) {
-            weatherCond = currentConditions.conditions.toLowerCase();
+            weatherCond = weatherData.currentConditions.conditions.toLowerCase();
             
           } else {
             weatherCond = weatherData.days[0].conditions.toLowerCase();
