@@ -1,64 +1,166 @@
 // Import images for different weather conditions from exports.js
-import { conditions } from "./exports.js";
+import { defaultBackground, searchIcon, 
+createElement, appendChildren, detailIcons, weatherIcons } from "./exports.js";
 
-// Picks the background image to display based off of the current weather conditions
-function displayBackground(condition, hour) {
-    // Declare an array of valid states/conditions of weather
-    const validStates = ["clear", "cloudy", "fog", "rain", "snow"];
 
-    // Create an object that maps each state in validStates to an appropriate array in conditions
-    const weather = Object.fromEntries(validStates.map((state, i) => [state, conditions[i]]));
+function buildMainUI () {
 
-    // Create two variables which will later use to store the state of the searched place and image index
-    let currentState;
-    let imageIndex;
-   
-    // Check if the condition description consists of multiple phrases and split it up into an array if so
-    if (condition.includes(" ")) {
-        condition = condition.split(" ");  
+    // Display default background image
+    document.body.style.backgroundImage = `url(${defaultBackground})`;
 
-    } else if (condition.includes(",")) {
-        condition = condition.split(",");
-    }
+    // Make container for weather information
+    const infoDisplayer = createElement({type: "div", id: "info-container", classList: [], textContent: ""});
 
-    // If the condition has been split into an array check if it contains any of the states in validStates
-    if (typeof condition === "object") {
-        validStates.forEach(state => {
-            if (condition.includes(state)) currentState = state;
-        });
+    // Create containers for specific information on the page
 
-    // Else check if any of the states is equal to that condition and if so set it as the value of currentState
-    } else {
-        validStates.forEach(state => {
-            if (["hail", "thunder", "showers"].includes(condition)) condition = "rain";
-            if (condition === "overcast") condition = "cloudy";
-            if (condition === "sleet") condition = "snow";
+    // Location searching section of page
+    const locationInfo = createElement({type: "div", id: "location-info", classList: [], textContent: ""});
+    const localTimeInfo = createElement({type: "div", id: "local-time-info", classList: [], textContent: ""});
+    localTimeInfo.innerHTML = "<span data-value='day'></span> <span data-value='time'></span>"
 
-            if (state === condition) currentState = state;
-        });
-    }
-
-    // Give appropriate index of the image based on the local time of the location search for
-    // Morning 5 - 12, Afternoon 12 - 17, Evening 17 - 19, Night 19 - 4
-    if (hour >= 5 && hour <= 11) imageIndex = 0;
-    else if (hour >= 12 && hour <= 17) imageIndex = 1;
-    else if (hour >= 18 && hour <= 19) imageIndex = 2;
-    else imageIndex = 3;
+    const searchLocation = createElement({type: "div", id: "search-location", classList: [], textContent: ""});
     
-    // Go into the weather object via the currentState and imageIndex then set that image to be the background
-    document.body.style.backgroundImage = `url(${weather[currentState][imageIndex]})`;
-}
+    // Location input for which to search the weather with
+    const location = createElement({type: "input", id: "location-name", classList: [], textContent: ""});
+    location.setAttribute("autocomplete", "off");
+    location.dataset.name = "location";
 
-// Displays the weather condition for current day
-function currentWeather(data) {}
+    // Used to search for location weather upon clickling
+    const searchBtn = createElement({type: "button", id: "search-btn", classList: [], textContent: ""});
+    searchBtn.dataset.name = "search";
 
-// Builds the user interface by calling all necessary functions
-function buildUI(weather) {
-    const weatherCond = weather.currentConditions.conditions.toLowerCase();
-    const localTime = Number(weather.currentConditions.datetime.slice(0, 2));
+    // Create and add search icon to search button
+    const searchIconElement = createElement({type: "img", id: "search-icon", classList: [], textContent: ""});
+    searchIconElement.src = searchIcon;
+    searchBtn.appendChild(searchIconElement);
 
-    displayBackground(weatherCond, localTime);
+
+    appendChildren(searchLocation, [location, searchBtn]);
+    appendChildren(locationInfo, [localTimeInfo, searchLocation]);
+
+    // Creates conditions section and sub divs inside it
+    const currentConditions = createElement({type: "div", id: "current-conditions", classList: [], textContent: ""});
+
+    // Used to display an icon indicating the time of the day
+    const timeIconContainer =  createElement({type: "div", id: "time-icon-wrapper", classList: [], textContent: ""});
+    const timeIcon = createElement({type: "img", id: "time-icon", classList: [], textContent: ""});
+    timeIcon.dataset.name = "time-icon";
+    timeIconContainer.appendChild(timeIcon);
+
+    // Used to display current weather conditions i.e. tempreture, humdity, windspeed, precipitation
+    const conditionsContainer = createElement({type: "div", id: "conditions-wrapper", classList: [], textContent: ""});
+
+    // Used to display current tempreture as well as estimated daily minimum temperature
+    const tempContainer = createElement({type: "div", id: "temp-wrapper", classList: [], textContent: ""});
+    
+    // Contains the text for the current temperature
+    const tempNumber = createElement({type: "div", id: "temp", classList: [], textContent: "9"});
+    tempNumber.dataset.name = "tempreture";
+
+    // Contains the celcius unit (C) and minimum temperature
+    const unitTempWrapper = createElement({type: "div", id: "unit-and-temp", classList: [], textContent: ""});
+
+    // Contains the unit (C) text
+    const unit = createElement({type: "span", id: "unit", classList: [], textContent: ""});
+    unit.innerHTML = "<sup>o</sup>C";
+
+    // Used to container the minimum tempreture value
+    const minTempNumber = createElement({type: "div", id: "min-temp-wrapper", classList: [], textContent: ""});
+    minTempNumber.innerHTML = "MIN <span id='min-temp' data-name='min-temp'>3</span> <sup>o</sup>C"
+
+    appendChildren(unitTempWrapper, [unit, minTempNumber]);
+    appendChildren(tempContainer, [tempNumber, unitTempWrapper]);
+
+    // Used to wrap the containers for humidity, wind-speed and precipitation
+    const detailsContainer = createElement({type: "div", id: "details-wrapper", classList: [], textContent: ""});
+
+    // Contains the humidity stat
+    const humidityContainer = createElement({type: "div", id: "humidity-wrapper", classList: ["detail"], textContent: ""});
+    humidityContainer.dataset.name = "humidity";
+
+    // Contains the wind speed stat
+    const windSpeedContainer = createElement({type: "div", id: "wind-speed-wrapper", classList: ["detail"], textContent: ""});
+    windSpeedContainer.dataset.name = "windSpeed";
+    
+    // Contains the precipitation stat
+    const precipContainer = createElement({type: "div", id: "precipitation-wrapper", classList: ["detail"], textContent: ""});
+    precipContainer.dataset.name = "precipitation";
+
+
+    // Group weather condition wrappers
+    const conditionWrappers = [humidityContainer, windSpeedContainer, precipContainer];
+
+    // For each condition append an iconWrapper and an infoWrapper
+    for (let wrapper of conditionWrappers) {
+
+        // Create Icon wrapper
+        const iconWrapper = createElement({type: "div", id: "", classList: ["icon-wrapper"], textContent: ""});
+        const icon = createElement({type: "img", id: "", classList: ["detail-icon"], textContent: ""});
+
+        // Add icon for specified condition
+        icon.src = `${detailIcons[wrapper.dataset.name]}`;
+
+        // Append icon to icon wrapper
+        iconWrapper.appendChild(icon);
+
+
+        // Create wrapper to hold text for specified condition
+        const infoWrapper = createElement({type: "div", id: "", classList: ["info-wrapper"], textContent: "0%"});
+        infoWrapper.dataset.name = "info";
+
+        // Append iconWrapper and infoWrapper to condition wrapper
+        appendChildren(wrapper, [iconWrapper, infoWrapper]);
+    }
+
+
+    appendChildren(detailsContainer, conditionWrappers);
+    appendChildren(conditionsContainer, [tempContainer, detailsContainer]);
+    appendChildren(currentConditions, [timeIconContainer, conditionsContainer]);
+
+    // Create div for bottom widget containing conditions for the week
+    const weeklyConditions = createElement({type: "div", id: "weekly-conditions", classList: [], textContent: ""});
+
+    // Create container for each day of the week
+    const daysContainer = createElement({type: "div", id: "day-container", classList: [], textContent: ""});
+    weeklyConditions.appendChild(daysContainer);
+
+    // Create array of days
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    days.forEach(day => {
+        // For each day create a day container
+        const dayContainer = createElement({type: "div", id: `day${days.indexOf(day)}`, classList: ["day"], textContent: ""});
+        
+        // Create day name container for containing the day name text
+        const dayName = createElement({type: "div", id: "day-name", classList: [], textContent: `${day}`});
+        dayName.dataset.name = "day";
+
+        // Create a container for conditions of the day i.e. sky state and maximum/minimum temperatures
+        const conditions = createElement({type: "div", id: "conditions", classList: [], textContent: ""});
+        
+        // Create container for icon depicting the sky state for that day
+        const state = createElement({type: "div", id: "state-wrapper", classList: [], textContent: ""});
+        const stateIcon = createElement({type: "img", id: "state", classList: [], textContent: ""});
+        stateIcon.src = weatherIcons.clear;
+        stateIcon.dataset.name = "day-state";
+
+        state.appendChild(stateIcon);
+
+        // Create container for the maximum/minimum temperatures for that day
+        const temp = createElement({type: "div", id: "daily-temp", classList: [""], textContent: ""});
+        temp.innerHTML = "<span data-name='max'>25<sup>o</sup></span> / <span data-name='min'>10<sup>o</sup></span>"
+        temp.dataset.name = "max-min-temp"
+
+        appendChildren(conditions, [state, temp]);
+        appendChildren(dayContainer, [dayName, conditions]);
+        daysContainer.appendChild(dayContainer);
+    });
+    
+
+    appendChildren(infoDisplayer, [locationInfo, currentConditions, weeklyConditions]);
+    document.body.appendChild(infoDisplayer);
+
 }
 
 // Exports
-export { buildUI };
+export { buildMainUI };
