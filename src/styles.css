@@ -1,10 +1,207 @@
+@font-face {
+    font-family: "Open Sans";
+    src: url("fonts/Open_Sans/static/OpenSans-Regular.ttf");
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Open Sans";
+    src: url("fonts/Open_Sans/static/OpenSans-Light.ttf");
+    font-weight: 300;
+    font-display: swap;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: "Open Sans";
+    color: #d5f0fb;
 }
+
+body, #location-info, #search-location,
+#current-conditions, #time-icon-wrapper,
+#conditions-wrapper, #details-wrapper,
+.detail, #temp-wrapper, #weekly-conditions,
+.day {
+    display: flex;
+}
+
+#location-info, #conditions-wrapper, .detail,
+.day {
+    flex-direction: column;
+}
+
+body, #location-info, #search-location,
+#current-conditions, #time-icon-wrapper,
+#weekly-conditions {
+    justify-content: center;
+}
+
 
 body {
     background-size: cover;
     background-repeat: no-repeat;
+}
+
+#local-time-info {
+    font-weight: 300;
+    height: 2rem;
+}
+
+#info-container {
+    display: grid;
+    grid-template-rows: 1fr 3fr 3fr;
+    gap: 1rem;
+    background-color: rgba(113, 113, 113, 0.264);
+    margin: 10vh 0;
+    width: 50%;
+    height: 80vh;
+    backdrop-filter: blur(5px);
+}
+
+#info-container > div {
+    border: 2px solid #8c8c8c;
+}
+
+/* Search section */
+
+#location-info {
+    font-size: 1.2rem;
+    align-items: center;
+}
+
+#search-location {
+    gap: .3rem;
+}
+
+#location-name {
+    font-size: 1.3rem;
+    text-align: center;
+    border: 2px solid #acacac;  
+    border-radius: .2rem;
+    background-color: transparent;
+    padding: .2rem .4rem;
+    width: 17rem;
+    height: 2.3rem;
+    transition: .5s ease;
+}
+
+#location-name:focus {
+    outline: transparent;
+    border: 3px solid #6ad1f7;
+}
+
+#search-btn {
+    background-color: transparent;
+    border: transparent;
+}
+
+#search-btn:hover {
+    cursor: pointer;
+}
+
+#search-icon {
+    width: 1.8rem;
+}
+
+/* Weather information section */
+
+#time-icon-wrapper, #conditions-wrapper {
+    width: 50%;
+    height: 100%;
+}
+
+#time-icon-wrapper {
+    align-items: center;
+    border-right: 1px solid #8c8c8c;
+}
+
+
+#time-icon {
+    width: 13rem;
+}
+
+#conditions-wrapper {
+    border-left: 1px solid #8c8c8c;
+}
+
+#temp-wrapper {
+    height: 65%;
+}
+
+#details-wrapper {
+    height: 35%;
+    justify-content: space-between;
+}
+
+.detail, .day {
+    border: 1px solid #8c8c8c;
+}
+
+.detail {
+    border-bottom: none;
+    height: 100%;
+    width: 33%;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail:first-of-type {
+    border-left: none;
+}
+
+.detail:last-of-type {
+    border-right: none;
+}
+
+
+.detail-icon {
+    width: 2rem;
+}
+
+#temp-wrapper {
+    justify-content: center;
+    gap: 1rem;
+}
+
+#temp {
+    padding-left: 2rem;
+    font-size: 7.4rem;
+}
+
+#unit-and-temp {
+    padding-top: 1.4rem;
+}
+
+#unit {
+    font-size: 3rem;
+}
+
+#min-temp-wrapper {
+    font-size: 1.2rem;
+}
+
+#day-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: .2rem;
+    margin-bottom: 2rem;
+    align-self: flex-end;
+    width: 95%;
+    height: 50%;
+}
+
+.day {
+    gap: .5rem;
+    text-align: center;
+}
+
+.day > #day-name {
+    font-size: 1.5rem;
+}
+
+#state {
+    width: 2.5rem;
 }
