@@ -3,7 +3,7 @@ import { conditions, timeIcons } from "./exports.js";
 
 
 // Picks the background image to display based off of the current weather conditions
-function changeBackground(condition, hour) {
+function changeBackground(condition, times) {
     // Check if the condition description consists of multiple phrases and split it up into an array if so
     condition = condition.includes(",") ? condition.split(",") : condition;
     condition = condition.includes(" ") ? condition.split(" ") : condition;
@@ -38,9 +38,13 @@ function changeBackground(condition, hour) {
 
     // Give appropriate index of the image based on the local time of the location search for
     // Morning 5 - 12, Afternoon 12 - 17, Evening 17 - 19, Night 19 - 4
-    if (hour >= 6 && hour <= 11) imageIndex = 0;
-    else if (hour >= 12 && hour <= 17) imageIndex = 1;
-    else if (hour >= 18 && hour <= 19) imageIndex = 2;
+    // Morning = sunrise start to Noon, Noon = half of night time, Afternoon = Noon to sunset time,
+    // Evening = sunset end time to one hour after sunset end time
+    // Night time Evening end to sunrise start
+    
+    if (times.currentTime >= times.sunrise && times.currentTime < times.noon) imageIndex = 0;
+    else if (times.currentTime >= times.noon && times.currentTime < times.sunset) imageIndex = 1;
+    else if (times.currentTime >= times.sunset && times.currentTime <= times.evening) imageIndex = 2;
     else imageIndex = 3;
     
     // Go into the weather object via the currentState and imageIndex then set that image to be the background
@@ -109,6 +113,18 @@ function checkTime(currentTime, times) {
             isSunrise = false;
         }
     }
+}
+
+// Used to automatically change the page background after a given amount of time
+let autoBackground;
+let autoWeather;
+
+function autoChangeBackground() {
+
+}
+
+function autoWeatherChange() {
+
 }
 
 // Runs clock of current time for each new location searched for 
@@ -214,4 +230,4 @@ function displayWeather(data) {
     
 }
 
-export { changeBackground, changeTime, clockEngine, setDay };
+export { changeBackground, displayWeather, changeTime, clockEngine, setDay };
