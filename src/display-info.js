@@ -136,7 +136,6 @@ function runClock(offset, container, times) {
     let hours = (now.getHours() - 2) + offset;
     hours = hours < 0 ? 24 + hours : hours;
 
-
     // Get minutes 
     let minutes = now.getMinutes();
 
@@ -153,8 +152,11 @@ function runClock(offset, container, times) {
     const meridian = Number(hours) >= 12 ? "PM" : "AM";
     hours = (hours % 12 || 12).toString().padStart(2, 0);
 
-    // Set the time string to the value of the container's text
-    container.innerText = `${hours}:${minutes}:${seconds} ${meridian}`;
+
+    if (!(hours % 1)) {
+        // Set the time string to the value of the container's text
+        container.innerText = `${hours}:${minutes}:${seconds} ${meridian}`;
+    }
 }
 
 
