@@ -28,15 +28,69 @@ import nightFoggy from "./images/night-foggy.jpg";
 import nightRainy from "./images/night-rainy.jpg";
 import nightSnowy from "./images/night-snowy.jpg";
 
+// Default background image
+import defaultBackground from "./images/default-image.jpg";
+
+// Search icon
+import searchIcon from "./icons/icons8-search-40.png";
+
+// Time icons
+import sunIcon from "./icons/sun.png";
+import moonIcon from "./icons/moon.png";
+import sunriseIcon from "./icons/sunrise.png";
+import sunsetIcon from "./icons/sunset.png";
+
+
+// Detail icons
+import humidityIcon from "./icons/humidity.png";
+import rainIcon from "./icons/rain.png";
+import windSpeedIcon from "./icons/wind-speed.png";
+
+// Weather icons
+import rainyIcon from "./icons/raining.png";
+import snowIcon from "./icons/raining.png";
+import stormIcon from "./icons/storm.png";
+import cloudyIcon from "./icons/cloud.png";
+import semiCloudyIcon from "./icons/cloudy.png";
+
+// Group condition images per the weather condition
 const clear = [morningClear, afternoonClear, eveningClear, nightClear];
 const cloudy = [morningCloudy, afternoonCloudy, eveningCloudy, nightCloudy];
 const fog = [morningFoggy, afternoonFoggy, eveningFoggy, nightFoggy];
 const rain = [morningRainy, afternoonRainy, eveningRainy, nightRainy];
 const snow = [morningSnowy, afternoonSnowy, eveningSnowy, nightSnowy];
 
+// Group conditions together
 const conditions = [clear, cloudy, fog, rain, snow];
 
+// Group Icons according to information each is supposed to convey
+const detailIcons = {
+    humidity: humidityIcon,
+    windSpeed: windSpeedIcon,
+    precipitation: rainIcon
+};
 
-export { conditions };
-export { buildUI } from "./ui.js";
-export { getData } from "./data.js";
+const timeIcons = {
+    day: sunIcon,
+    night: moonIcon,
+    sunrise: sunriseIcon,
+    sunset: sunsetIcon,
+}
+
+const weatherIcons = {
+    clear: sunIcon,
+    cloudy: cloudyIcon,
+    semiCloudy: semiCloudyIcon,
+    rain: rainyIcon,
+    storm: stormIcon,
+    snow: snowIcon,
+}
+
+
+export { conditions, defaultBackground, searchIcon,
+detailIcons, timeIcons, weatherIcons};
+export { changeBackground, displayWeather, changeTime,
+clockEngine, setDay } from "./display-info.js";
+export { buildMainUI } from "./ui.js";
+export { getWeatherData, getLocalTime } from "./data.js";
+export { createElement, appendChildren} from "./utils.js";
