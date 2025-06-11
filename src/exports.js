@@ -80,7 +80,7 @@ const timeIcons = {
 const weatherIcons = {
     clear: sunIcon,
     cloudy: cloudyIcon,
-    semiCloudy: semiCloudyIcon,
+    "partially-cloudy": semiCloudyIcon,
     rain: rainyIcon,
     storm: stormIcon,
     snow: snowIcon,
