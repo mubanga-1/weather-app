@@ -27,7 +27,17 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
         const weatherData = await getWeatherData(locationName, startDate, endDate);
 
         if (weatherData) {
-          const weatherCond = weatherData.days[0].conditions.toLowerCase();
+          let weatherCond;
+
+          // Get weather conditions depending on weather or not we have access to the current conditions
+          if (Object.keys(weatherData).includes("currentConditions")) {
+            weatherCond = currentConditions.conditions.toLowerCase();
+            
+          } else {
+            weatherCond = weatherData.days[0].conditions.toLowerCase();
+          }
+
+
           const sunrise = weatherData.days[0].sunrise.slice(0, 5);
           const sunset = weatherData.days[0].sunset.slice(0, 5);
 
