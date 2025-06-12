@@ -168,7 +168,7 @@ body {
 
 #temp {
     padding-left: 2rem;
-    font-size: 7.4rem;
+    font-size: 5.4rem;
 }
 
 #unit-and-temp {
@@ -204,4 +204,8 @@ body {
 
 #state {
     width: 2.5rem;
+}
+
+#daily-temp {
+    font-size: .9rem;
 }

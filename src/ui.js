@@ -16,7 +16,7 @@ function buildMainUI () {
     // Location searching section of page
     const locationInfo = createElement({type: "div", id: "location-info", classList: [], textContent: ""});
     const localTimeInfo = createElement({type: "div", id: "local-time-info", classList: [], textContent: ""});
-    localTimeInfo.innerHTML = "<span data-value='day'></span> <span data-value='time'></span>"
+    localTimeInfo.innerHTML = "<span data-value='day'>Saturday</span> <span data-value='time'>08:00:00 AM</span>"
 
     const searchLocation = createElement({type: "div", id: "search-location", classList: [], textContent: ""});
     
@@ -55,7 +55,7 @@ function buildMainUI () {
     
     // Contains the text for the current temperature
     const tempNumber = createElement({type: "div", id: "temp", classList: [], textContent: "9"});
-    tempNumber.dataset.name = "tempreture";
+    tempNumber.dataset.name = "temperature";
 
     // Contains the celcius unit (C) and minimum temperature
     const unitTempWrapper = createElement({type: "div", id: "unit-and-temp", classList: [], textContent: ""});
@@ -66,7 +66,7 @@ function buildMainUI () {
 
     // Used to container the minimum tempreture value
     const minTempNumber = createElement({type: "div", id: "min-temp-wrapper", classList: [], textContent: ""});
-    minTempNumber.innerHTML = "MIN <span id='min-temp' data-name='min-temp'>3</span> <sup>o</sup>C"
+    minTempNumber.innerHTML = "MIN <span id='min-temp' data-name='min-temp'>5</span> <sup>o</sup>C"
 
     appendChildren(unitTempWrapper, [unit, minTempNumber]);
     appendChildren(tempContainer, [tempNumber, unitTempWrapper]);
@@ -129,7 +129,7 @@ function buildMainUI () {
 
     days.forEach(day => {
         // For each day create a day container
-        const dayContainer = createElement({type: "div", id: `day${days.indexOf(day)}`, classList: ["day"], textContent: ""});
+        const dayContainer = createElement({type: "div", id: `day${days.indexOf(day) + 1}`, classList: ["day"], textContent: ""});
         
         // Create day name container for containing the day name text
         const dayName = createElement({type: "div", id: "day-name", classList: [], textContent: `${day}`});
@@ -148,8 +148,8 @@ function buildMainUI () {
 
         // Create container for the maximum/minimum temperatures for that day
         const temp = createElement({type: "div", id: "daily-temp", classList: [""], textContent: ""});
-        temp.innerHTML = "<span data-name='max'>25<sup>o</sup></span> / <span data-name='min'>10<sup>o</sup></span>"
-        temp.dataset.name = "max-min-temp"
+        temp.innerHTML = "<span data-name='max'>25</span><sup>o</sup> / <span data-name='min'>10</span><sup>o</sup>";
+        temp.dataset.name = "max-min-temp";
 
         appendChildren(conditions, [state, temp]);
         appendChildren(dayContainer, [dayName, conditions]);
