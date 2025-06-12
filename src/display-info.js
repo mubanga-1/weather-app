@@ -1,9 +1,17 @@
 // Import images for different weather conditions from exports.js
-import { conditions, timeIcons, weatherIcons } from "./exports.js";
+import { conditions, timeIcons, weatherIcons, getWeatherData } from "./exports.js";
+import { parse, format } from "date-fns";
 
+// Keep track of location searched for in order implement automatic weather search mechanism 
+let location;
+let changeTimes;
+let startDate;
+let endDate;
 
 // Picks the background image to display based off of the current weather conditions
 function changeBackground(condition, times) {
+    changeTimes = times;
+
     // Check if the condition description consists of multiple phrases and split it up into an array if so
     condition = condition.includes(",") ? condition.split(",") : condition;
     condition = condition.includes(" ") ? condition.split(" ") : condition;
@@ -115,16 +123,33 @@ function checkTime(currentTime, times) {
     }
 }
 
-// Used to automatically change the page background after a given amount of time
-let autoBackground;
+// Used to keep track of weather or not the weather data and background should be changed
 let autoWeather;
 
-function autoChangeBackground() {
+// Get's automatically change the weather data and background after a certain time interval
+function autoChange(currentTime) {
 
-}
+    (async () => {
+        const data = await getWeatherData(location, startDate, endDate);
 
-function autoWeatherChange() {
+        if (data) {
 
+            let conditions = Object.keys(data).includes("currentConditions") ?
+            data.currentConditions.conditions :
+            data.days[0].conditions;
+            
+            changeTimes.currentTime = parse(currentTime.slice(0, 5), "HH:mm", new Date());
+            
+            changeBackground(conditions.toLowerCase(), changeTimes);
+            displayWeather(data);
+
+            autoWeather = false;
+            
+        } else {
+            window.alert("Lost connection :(");
+        }
+
+    })();
 }
 
 // Runs clock of current time for each new location searched for 
@@ -138,6 +163,8 @@ function runClock(offset, container, times) {
 
     // Get minutes 
     let minutes = now.getMinutes();
+
+    let autoTimeString = `${hours}:${minutes}`;
 
     // Get current time as a number 
     const current = hours + (minutes / 60);
@@ -156,6 +183,11 @@ function runClock(offset, container, times) {
     if (!(hours % 1)) {
         // Set the time string to the value of the container's text
         container.innerText = `${hours}:${minutes}:${seconds} ${meridian}`;
+
+        if (!autoWeather) {
+            setTimeout(autoChange, 900000, autoTimeString);
+            autoWeather = true;
+        };
     }
 }
 
@@ -272,6 +304,11 @@ function getWeekData(days) {
 
 // Displays the weather conditions for the current day following a seven day time period
 function displayWeather(data) {
+    // Set the values of startDate and endDate for automatic search
+    startDate = format(new Date(data.days[0].datetime), "yyyy-MM-dd");
+    endDate = format(new Date(data.days[7].datetime), "yyyy-MM-dd");;
+
+    location = data.address;
 
     // Extract all necessary data from data object
     let temperature;
