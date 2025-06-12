@@ -17,14 +17,22 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
       
       if (timeData) {
         // Get current date and time of searched for location
-        const [ date, time ] = timeData.datetime.split(" ");
+        const [ date, time ] = Object.keys(timeData).includes("datetime") ? timeData.datetime.split(" ") : ["", ""];
         
-        // Start date and End date for the weather
-        let startDate = new Date(date);
-        const endDate = format(addDays(startDate, 7), "yyyy-MM-dd");
-        startDate = format(startDate, "yyyy-MM-dd");
+        let weatherData;
 
-        const weatherData = await getWeatherData(locationName, startDate, endDate);
+
+        if (date) {
+          // Start date and End date for the weather
+          let startDate = new Date(date);
+          const endDate = format(addDays(startDate, 7), "yyyy-MM-dd");
+          startDate = format(startDate, "yyyy-MM-dd");
+
+          weatherData = await getWeatherData(locationName, startDate, endDate);
+
+        } else {
+          window.alert("Invalid Location!")
+        }
 
         if (weatherData) {
           let weatherCond;

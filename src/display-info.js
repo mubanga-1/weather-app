@@ -1,5 +1,5 @@
 // Import images for different weather conditions from exports.js
-import { conditions, timeIcons } from "./exports.js";
+import { conditions, timeIcons, weatherIcons } from "./exports.js";
 
 
 // Picks the background image to display based off of the current weather conditions
@@ -149,7 +149,7 @@ function runClock(offset, container, times) {
     const seconds = now.getSeconds().toString().padStart(2, 0);
     
     // Set the meridian and change the hours to follow 12 hour format
-    const meridian = Number(hours) >= 12 ? "PM" : "AM";
+    const meridian = Number(hours) >= 12 && Number(hours) < 24 ? "PM" : "AM";
     hours = (hours % 12 || 12).toString().padStart(2, 0);
 
 
@@ -227,9 +227,106 @@ function clockEngine(data) {
     );
 }
 
+// Gets the conditions of the following seven days excluding the current day
+function getWeekData(days) {
+    // Declare an object to later store the names, conditions and temperatures of the following days
+    const weekData = {};
+    
+    for (let i = 1; i < days.length; i++) {
+        const dayName = (new Date(days[i].datetime)).toLocaleDateString("en-US", { weekday: "short"});
+        
+        // Get conditions
+        let conditions = days[i].conditions.toLowerCase();
+        conditions = conditions === "partially cloudy" ? conditions.split(" ").join("-") : conditions;
+        conditions = conditions.includes(",") ? conditions.split(",") : conditions;
+        conditions = conditions.includes(" ") ? conditions.split(" ") : conditions;
+
+        let validConditions = Object.keys(weatherIcons);
+
+        if (typeof conditions === "object") {
+            validConditions.forEach(condition => {
+                if (conditions.includes(condition)) conditions = condition;
+            });
+        } else {
+            if (["hail", "showers"].includes(conditions)) conditions = "rain";
+            if ("thunder" === conditions) conditions = storm;
+            if (["overcast", "fog"].includes(conditions)) conditions = "cloudy";
+            if (conditions === "sleet") conditions = "snow";
+        }
+        
+        const maxTemp = days[i].tempmax;
+        const minTemp = days[i].tempmin;
+
+
+        weekData[dayName] = {
+            conditions: conditions,
+            maxTemp: maxTemp,
+            minTemp: minTemp,
+        }
+    }
+
+    return weekData;
+}
+
+
+
 // Displays the weather conditions for the current day following a seven day time period
 function displayWeather(data) {
+
+    // Extract all necessary data from data object
+    let temperature;
+    let minTemp;
+    let humidity;
+    let windSpeed;
+    let precipitation;
     
+    // Get weather conditions depending on weather or not we have access the current conditions
+    if (Object.keys(data).includes("currentConditions")) {
+        temperature = data.currentConditions.temp;
+        humidity = data.currentConditions.humidity;
+        windSpeed = data.currentConditions["windspeed"];
+        precipitation = data.currentConditions.precip;
+
+    } else {
+        temperature = data.days[0].tempmax;
+        humidity = data.days[0].humidity;
+        windSpeed = data.days[0]["windspeed"];
+        precipitation = data.days[0].precip;
+    }
+
+    minTemp = data.days[0].tempmin;
+
+    // Display that information on page
+    const tempContainer = document.querySelector("[data-name='temperature']");
+    tempContainer.innerText = temperature;
+
+    const minTempContainer = document.querySelector("[data-name='min-temp']");
+    minTempContainer.innerText = minTemp;
+
+    const humidityContainer = document.querySelector("[data-name='humidity'] > [data-name='info']");
+    humidityContainer.innerText = `${humidity}%` ;
+    
+    const windSpeedContainer = document.querySelector("[data-name='windSpeed'] > [data-name='info']");
+    windSpeedContainer.innerText = `${windSpeed} km/h`;
+
+    const precipContainer = document.querySelector("[data-name='precipitation'] > [data-name='info']");
+    precipContainer.innerText = `${precipitation}%`;
+
+    // Get week's information
+    const days = getWeekData(data.days);
+    let counter = 1;
+
+    // For each day in the days object fill in the specific information on the page
+    for (let day in days) {
+
+        document.querySelector(`#day${counter} > [data-name='day']`).innerText = day;
+        document.querySelector(`#day${counter} [data-name='day-state']`).src = weatherIcons[days[day].conditions];
+        document.querySelector(`#day${counter} [data-name='max']`).innerText = days[day].maxTemp;
+        document.querySelector(`#day${counter} [data-name='min']`).innerText = days[day].minTemp;
+        
+        counter++;
+    }
+
 }
 
 export { changeBackground, displayWeather, changeTime, clockEngine, setDay };
