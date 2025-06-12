@@ -94,10 +94,7 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
           displayWeather(weatherData);
 
         }
-        console.log(weatherData);
       } 
-
-      console.log(timeData);
 
     })();
   }
