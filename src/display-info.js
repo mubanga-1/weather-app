@@ -283,15 +283,15 @@ function displayWeather(data) {
     // Get weather conditions depending on weather or not we have access the current conditions
     if (Object.keys(data).includes("currentConditions")) {
         temperature = data.currentConditions.temp;
-        humidity = data.currentConditions.humidity;
-        windSpeed = data.currentConditions["windspeed"];
-        precipitation = data.currentConditions.precip;
+        humidity = data.currentConditions.humidity !== null ? data.currentConditions.humidity : "N/A";
+        windSpeed = data.currentConditions["windspeed"] !== null ? data.currentConditions["windspeed"] : "N/A";
+        precipitation = data.currentConditions.precip !== null ? data.currentConditions.precip : "N/A";
 
     } else {
         temperature = data.days[0].tempmax;
-        humidity = data.days[0].humidity;
-        windSpeed = data.days[0]["windspeed"];
-        precipitation = data.days[0].precip;
+        humidity = data.days[0].humidity !== null ? data.days[0].humidity : "N/A";
+        windSpeed = data.days[0]["windspeed"] !== null ? data.days[0]["windspeed"] : "N/A";
+        precipitation = data.days[0].precip !== null ? data.days[0].precip : "N/A";
     }
 
     minTemp = data.days[0].tempmin;
@@ -304,13 +304,13 @@ function displayWeather(data) {
     minTempContainer.innerText = minTemp;
 
     const humidityContainer = document.querySelector("[data-name='humidity'] > [data-name='info']");
-    humidityContainer.innerText = `${humidity}%` ;
+    humidityContainer.innerText = humidity !== "N/A" ? `${humidity}%` : humidity;
     
     const windSpeedContainer = document.querySelector("[data-name='windSpeed'] > [data-name='info']");
-    windSpeedContainer.innerText = `${windSpeed} km/h`;
+    windSpeedContainer.innerText = windSpeed !== "N/A" ? `${windSpeed} km/h` : windSpeed;
 
     const precipContainer = document.querySelector("[data-name='precipitation'] > [data-name='info']");
-    precipContainer.innerText = `${precipitation}%`;
+    precipContainer.innerText = precipitation !== "N/A" ? `${precipitation}%` : precipitation;
 
     // Get week's information
     const days = getWeekData(data.days);
