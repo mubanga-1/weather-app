@@ -1,6 +1,13 @@
 import "./styles.css";
-import { displayWeather, buildMainUI, getWeatherData,
-getLocalTime, changeBackground, clockEngine, setDay } from "./exports.js";
+import {
+  displayWeather,
+  buildMainUI,
+  getWeatherData,
+  getLocalTime,
+  changeBackground,
+  clockEngine,
+  setDay,
+} from "./exports.js";
 import { addDays, format, parse, differenceInMinutes } from "date-fns";
 
 buildMainUI();
@@ -10,17 +17,16 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
 
   if (locationName) {
     (async () => {
-
-      // Local time information of location searched for 
+      // Local time information of location searched for
       const timeData = await getLocalTime(locationName);
 
-      
       if (timeData) {
         // Get current date and time of searched for location
-        const [ date, time ] = Object.keys(timeData).includes("datetime") ? timeData.datetime.split(" ") : ["", ""];
-        
-        let weatherData;
+        const [date, time] = Object.keys(timeData).includes("datetime")
+          ? timeData.datetime.split(" ")
+          : ["", ""];
 
+        let weatherData;
 
         if (date) {
           // Start date and End date for the weather
@@ -29,9 +35,8 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
           startDate = format(startDate, "yyyy-MM-dd");
 
           weatherData = await getWeatherData(locationName, startDate, endDate);
-
         } else {
-          window.alert("Invalid Location!")
+          window.alert("Invalid Location!");
         }
 
         if (weatherData) {
@@ -39,12 +44,11 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
 
           // Get weather conditions depending on weather or not we have access to the current conditions
           if (Object.keys(weatherData).includes("currentConditions")) {
-            weatherCond = weatherData.currentConditions.conditions.toLowerCase();
-            
+            weatherCond =
+              weatherData.currentConditions.conditions.toLowerCase();
           } else {
             weatherCond = weatherData.days[0].conditions.toLowerCase();
           }
-
 
           const sunrise = weatherData.days[0].sunrise.slice(0, 5);
           const sunset = weatherData.days[0].sunset.slice(0, 5);
@@ -56,9 +60,9 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
           let time1 = parse(sunrise, format, new Date());
           const time2 = parse(sunset, format, new Date());
 
-          time1 = time1 < time2 ? addDays(time1, 1) : time1; 
+          time1 = time1 < time2 ? addDays(time1, 1) : time1;
 
-          // Get the difference in minutes of time1 and time2 then divide it by 60 to get the hours and minutes as a decimal 
+          // Get the difference in minutes of time1 and time2 then divide it by 60 to get the hours and minutes as a decimal
           const timeDifference = differenceInMinutes(time1, time2) / 60;
 
           // Get the difference in hours by truncating the minutes
@@ -69,10 +73,14 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
 
           // Get sunsetMinutes + 30 minutes later and evening hours
           const sunsetMinutes = parseInt(sunset.slice(3, 5)) + 30;
-          const eveningHours = sunsetMinutes >= 60 ? parseInt(sunset.slice(0, 2)) + 1: sunset.slice(0, 2);
+          const eveningHours =
+            sunsetMinutes >= 60
+              ? parseInt(sunset.slice(0, 2)) + 1
+              : sunset.slice(0, 2);
 
           // Get eveningMinutes from sunsetMinutes + 30 and make evening time string
-          const eveningMinutes = sunsetMinutes >= 60 ? sunsetMinutes - 60 : sunsetMinutes;
+          const eveningMinutes =
+            sunsetMinutes >= 60 ? sunsetMinutes - 60 : sunsetMinutes;
           const evening = `${eveningHours}:${eveningMinutes}`;
 
           const times = {
@@ -81,9 +89,9 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
             noon: parse(noon, format, new Date()),
             sunset: parse(sunset, format, new Date()),
             evening: parse(evening, format, new Date()),
-          }
-          
-          // Display a background 
+          };
+
+          // Display a background
           changeBackground(weatherCond, times);
 
           // Set the day and time
@@ -92,11 +100,8 @@ document.querySelector("[data-name='search']").addEventListener("click", () => {
 
           // Lastly populate the ui with data
           displayWeather(weatherData);
-
         }
-      } 
-
+      }
     })();
   }
 });
-

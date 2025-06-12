@@ -12,9 +12,8 @@ function createElement(elementObject) {
   return newElement;
 }
 
-
 function appendChildren(parent, children) {
-  children.forEach(child => {
+  children.forEach((child) => {
     parent.appendChild(child);
   });
 }

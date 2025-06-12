@@ -40,7 +40,6 @@ import moonIcon from "./icons/moon.png";
 import sunriseIcon from "./icons/sunrise.png";
 import sunsetIcon from "./icons/sunset.png";
 
-
 // Detail icons
 import humidityIcon from "./icons/humidity.png";
 import rainIcon from "./icons/rain.png";
@@ -65,32 +64,42 @@ const conditions = [clear, cloudy, fog, rain, snow];
 
 // Group Icons according to information each is supposed to convey
 const detailIcons = {
-    humidity: humidityIcon,
-    windSpeed: windSpeedIcon,
-    precipitation: rainIcon
+  humidity: humidityIcon,
+  windSpeed: windSpeedIcon,
+  precipitation: rainIcon,
 };
 
 const timeIcons = {
-    day: sunIcon,
-    night: moonIcon,
-    sunrise: sunriseIcon,
-    sunset: sunsetIcon,
-}
+  day: sunIcon,
+  night: moonIcon,
+  sunrise: sunriseIcon,
+  sunset: sunsetIcon,
+};
 
 const weatherIcons = {
-    clear: sunIcon,
-    cloudy: cloudyIcon,
-    "partially-cloudy": semiCloudyIcon,
-    rain: rainyIcon,
-    storm: stormIcon,
-    snow: snowIcon,
-}
+  clear: sunIcon,
+  cloudy: cloudyIcon,
+  "partially-cloudy": semiCloudyIcon,
+  rain: rainyIcon,
+  storm: stormIcon,
+  snow: snowIcon,
+};
 
-
-export { conditions, defaultBackground, searchIcon,
-detailIcons, timeIcons, weatherIcons};
-export { changeBackground, displayWeather, changeTime,
-clockEngine, setDay } from "./display-info.js";
+export {
+  conditions,
+  defaultBackground,
+  searchIcon,
+  detailIcons,
+  timeIcons,
+  weatherIcons,
+};
+export {
+  changeBackground,
+  displayWeather,
+  changeTime,
+  clockEngine,
+  setDay,
+} from "./display-info.js";
 export { buildMainUI } from "./ui.js";
 export { getWeatherData, getLocalTime } from "./data.js";
-export { createElement, appendChildren} from "./utils.js";
+export { createElement, appendChildren } from "./utils.js";
